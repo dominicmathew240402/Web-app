@@ -83,16 +83,27 @@ if source_radio == settings.IMAGE:
                                     conf=confidence
                                     )
                 boxes = res[0].boxes
+
+                count = 0
+
                 res_plotted = res[0].plot()[:, :, ::-1]
                 st.image(res_plotted, caption='Detected Image',
                          use_column_width=True)
                 try:
                     with st.expander("Detection Results"):
                         for box in boxes:
+                            count=count+1
                             st.write(box.data)
+
+                        count1 = count - 1
+                        st.write(f"Total Object Detected: {count1}")
+                
                 except Exception as ex:
                     # st.write(ex)
                     st.write("No image is uploaded yet!")
+
+elif source_radio == settings.PICTURE:
+    helper.play_capture_image(confidence, model)
 
 elif source_radio == settings.VIDEO:
     helper.play_stored_video(confidence, model)
