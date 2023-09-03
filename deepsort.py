@@ -97,8 +97,6 @@ if source_radio == settings.IMAGE:
                         for box in boxes:
                             count+=1
 
-                            class_id = result[box.cls[0].item()]
-
                             box_confidence = box.conf
                             st.write(box.data)
                             st.write(f"Confidence : {box_confidence}")
