@@ -94,7 +94,7 @@ if source_radio == settings.IMAGE:
                 try:
                     with st.expander("Detection Results"):
                         for box in boxes:
-                            count=+1
+                            count+=1
                             st.write(box.data)
 
                         count1 = count - 1
