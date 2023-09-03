@@ -272,3 +272,24 @@ def play_stored_video(conf, model):
                     break
         except Exception as e:
             st.sidebar.error("Error loading video: " + str(e))
+            
+def capture_snapshot(track, image):
+    """
+    Capture a snapshot of a tracked object from an image.
+
+    Parameters:
+    - track: The tracking object containing information like bounding box coordinates.
+    - image: The original image on which the object is detected.
+
+    Returns:
+    - snapshot: A PIL Image object containing only the tracked object.
+    """
+    # Get bounding box coordinates from the track object
+    # This is assuming that the 'track' object has 'left', 'top', 'right', 'bottom' attributes.
+    # You may need to adjust this based on how your tracking information is actually stored.
+    left, top, right, bottom = track.left, track.top, track.right, track.bottom
+
+    # Crop the image to get only the object
+    snapshot = image.crop((left, top, right, bottom))
+    
+    return snapshot
