@@ -61,56 +61,6 @@ def _display_detected_frames(conf, model, st_frame, image, is_display_tracking=N
                    channels="BGR",
                    use_column_width=True
                    )
-    
-def play_capture_image(conf, model):
-    """
-    Turn on the camera, capture an image, and perform object detection using YOLOv8.
-
-    Args:
-    - conf (float): Confidence threshold for object detection.
-    - model (YoloV8): A YOLOv8 object detection model.
-
-    Returns:
-    None
-    """
-
-    # Open the camera (you can change the camera index as needed, 0 is usually the built-in camera)
-    cap = cv2.VideoCapture(0)
-
-    if not cap.isOpened():
-        print("Error: Unable to access the camera.")
-        return
-
-    try:
-        while True:
-            # Capture a frame from the camera
-            ret, frame = cap.read()
-
-            if not ret:
-                print("Error: Unable to capture a frame from the camera.")
-                break
-
-            # Display the captured frame
-            cv2.imshow("Camera Feed", frame)
-
-            # Check for user input to capture an image (e.g., press 's' key)
-            key = cv2.waitKey(1)
-            if key == ord('s'):
-                # Perform object detection on the captured image
-                res = model.predict(frame, conf=conf)
-
-                # Display the detected objects on the captured image
-                res_plotted = res[0].plot()
-                cv2.imshow("Detected Objects", res_plotted)
-
-            # Check for user input to exit (e.g., press 'q' key)
-            if key == ord('q'):
-                break
-
-    finally:
-        # Release the camera and close OpenCV windows when done
-        cap.release()
-        cv2.destroyAllWindows()
 
 def play_youtube_video(conf, model):
     """

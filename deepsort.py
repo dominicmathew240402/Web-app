@@ -10,6 +10,7 @@ from deep_sort_realtime.deepsort_tracker import Tracker
 # Local Modules
 import settings
 import helper
+import result
 
 # Setting page layout
 st.set_page_config(
@@ -95,7 +96,12 @@ if source_radio == settings.IMAGE:
                     with st.expander("Detection Results"):
                         for box in boxes:
                             count+=1
+
+                            class_id = result[box.cls[0].item()]
+
+                            box_confidence = box.conf
                             st.write(box.data)
+                            st.write(f"Confidence : {box_confidence}")
 
                         count1 = count - 1
                         st.write(f"Total Object Detected: {count1}")

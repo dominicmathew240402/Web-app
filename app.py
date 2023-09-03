@@ -10,6 +10,7 @@ from deep_sort_realtime.deepsort_tracker import Tracker
 # Local Modules
 import settings
 import helper
+import result
 
 # Setting page layout
 st.set_page_config(
