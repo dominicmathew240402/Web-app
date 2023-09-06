@@ -11,6 +11,7 @@ from deep_sort_realtime.deepsort_tracker import Tracker
 # Local Modules
 import settings
 import helper
+import result
 
 # Image dimensions
 image_width = 480  # Replace with the actual width of your image
@@ -104,6 +105,8 @@ if source_radio == settings.IMAGE:
                 conf_list = conf.tolist()
                 cls_list = cls.tolist()
 
+                classid = result.names[cls_list[0]]
+
                 # Create a folder to save images and annotations
                 output_folder = "train"
                 os.makedirs(output_folder, exist_ok=True)
@@ -127,6 +130,8 @@ if source_radio == settings.IMAGE:
                 st.image(res_plotted, caption='Detected Image',
                          use_column_width=True)
                 
+                st.write(f"Object Name: {classid}")
+                
                 # Display the converted lists
                 st.write("Bounding Boxes (xyxy format):")
                 st.write(xyxy_list)
@@ -146,13 +151,10 @@ if source_radio == settings.IMAGE:
                         count1 = count - 1
 
                         st.write(f"Total Object Detected: {count1}")
-                
+
                 except Exception as ex:
                     # st.write(ex)
                     st.write("No image is uploaded yet!")
-
-elif source_radio == settings.PICTURE:
-    helper.play_capture_image(confidence, model)
 
 elif source_radio == settings.VIDEO:
     helper.play_stored_video(confidence, model)

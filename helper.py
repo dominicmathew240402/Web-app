@@ -4,6 +4,7 @@ import cv2
 from pytube import YouTube
 
 import settings
+import os
 
 
 def load_model(model_path):
@@ -75,7 +76,7 @@ def play_youtube_video(conf, model):
 
     Raises:
         None
-    """
+
     source_youtube = st.sidebar.text_input("YouTube Video url")
 
     is_display_tracker, tracker = display_tracker_options()
@@ -103,6 +104,50 @@ def play_youtube_video(conf, model):
         except Exception as e:
             st.sidebar.error("Error loading video: " + str(e))
 
+     """
+    source_youtube = st.sidebar.text_input("YouTube Video url")
+    is_display_tracker, tracker = display_tracker_options()
+
+    if st.sidebar.button('Detect Objects'):
+        try:
+            yt = YouTube(source_youtube)
+            stream = yt.streams.filter(file_extension="mp4", res=720).first()
+            vid_cap = cv2.VideoCapture(stream.url)
+
+            st_frame = st.empty()
+            frame_count = 0
+            capturing_snapshots = True
+            max_snapshots = 10
+
+            # Create a directory for saving frames
+            save_dir = "train/youtube"
+            os.makedirs(save_dir, exist_ok=True)
+
+            while vid_cap.isOpened():
+                success, image = vid_cap.read()
+                if success:
+                    _display_detected_frames(conf, model, st_frame, image, is_display_tracker, tracker)
+
+                    if capturing_snapshots:
+                        # Capture snapshots based on frame_count
+                        frame_id = f"frame_{frame_count}"
+                        frame_path = os.path.join(save_dir, frame_id + ".jpg")
+                        cv2.imwrite(frame_path, image)
+                        frame_count += 1
+
+                        if frame_count >= max_snapshots:
+                            capturing_snapshots = False  # Stop capturing snapshots
+
+                    if not capturing_snapshots:
+                        # Continue playing the video without capturing snapshots
+                        if frame_count >= max_snapshots:
+                            frame_count += 1
+
+                else:
+                    vid_cap.release()
+                    break
+        except Exception as e:
+            st.sidebar.error("Error loading video: " + str(e))
 
 def play_rtsp_stream(conf, model):
     """
@@ -223,23 +268,3 @@ def play_stored_video(conf, model):
         except Exception as e:
             st.sidebar.error("Error loading video: " + str(e))
             
-def capture_snapshot(track, image):
-    """
-    Capture a snapshot of a tracked object from an image.
-
-    Parameters:
-    - track: The tracking object containing information like bounding box coordinates.
-    - image: The original image on which the object is detected.
-
-    Returns:
-    - snapshot: A PIL Image object containing only the tracked object.
-    """
-    # Get bounding box coordinates from the track object
-    # This is assuming that the 'track' object has 'left', 'top', 'right', 'bottom' attributes.
-    # You may need to adjust this based on how your tracking information is actually stored.
-    left, top, right, bottom = track.left, track.top, track.right, track.bottom
-
-    # Crop the image to get only the object
-    snapshot = image.crop((left, top, right, bottom))
-    
-    return snapshot
